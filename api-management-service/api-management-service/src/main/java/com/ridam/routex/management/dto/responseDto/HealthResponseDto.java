@@ -11,5 +11,5 @@ public class HealthResponseDto {
     private String serviceName;
     private String serviceDescription;
     private String appStatus;
-
+    private String dbStatus;
 }
