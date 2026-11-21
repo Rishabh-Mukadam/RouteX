@@ -57,6 +57,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->{
             auth.requestMatchers("/health","/api/auth/*").permitAll()
                     .requestMatchers("/api/platform/organization/**").hasRole("PLATFORM_ADMIN")
+                    .requestMatchers("/api/tenant/organization/**").hasRole("TENANT_ADMIN")
+                    .requestMatchers("/api/gateway/routes").hasRole("GATEWAY_SERVICE")
+                    .requestMatchers("/", "/index.html", "/styles.css", "/app.js", "/favicon.ico",
+                            "/health", "/api/auth/login").permitAll()
                     .anyRequest().authenticated();
         });
         return httpSecurity.build();
