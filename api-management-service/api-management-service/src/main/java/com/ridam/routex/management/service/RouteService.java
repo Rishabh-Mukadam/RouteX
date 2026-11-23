@@ -4,6 +4,7 @@ import com.ridam.routex.management.dto.requestDto.HeaderRuleRequest;
 import com.ridam.routex.management.dto.requestDto.RouteRequest;
 import com.ridam.routex.management.dto.requestDto.RouteStatusRequest;
 import com.ridam.routex.management.dto.responseDto.AuditRecordResponse;
+import com.ridam.routex.management.dto.responseDto.GatewayRouteResponse;
 import com.ridam.routex.management.dto.responseDto.RouteResponse;
 import com.ridam.routex.management.dto.responseDto.RouteVersionResponse;
 import com.ridam.routex.management.entity.*;
@@ -11,8 +12,11 @@ import com.ridam.routex.management.enums.RouteVersionChnageType;
 import com.ridam.routex.management.exception.ApiException;
 import com.ridam.routex.management.repository.*;
 import jakarta.validation.Valid;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
@@ -21,6 +25,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RouteService {
@@ -31,9 +36,11 @@ public class RouteService {
     private final RouteConfigurationVersionRepository routeConfigurationVersionRepository;
     private final AuditService auditService;
     private final ControlPlaneAuditRecordRepository auditRecordRepository;
+    private final JdbcTemplate template;
+    private final OrganizationRepository organizationRepository;
 
 
-    public RouteService(TenantContext tenantContext, ApiRouteRepository apiRouteRepository, VersionRepository versionRepository, ObjectMapper objectMapper, RouteConfigurationVersionRepository routeConfigurationVersionRepository, AuditService auditService, ControlPlaneAuditRecordRepository auditRecordRepository) {
+    public RouteService(TenantContext tenantContext, ApiRouteRepository apiRouteRepository, VersionRepository versionRepository, ObjectMapper objectMapper, RouteConfigurationVersionRepository routeConfigurationVersionRepository, AuditService auditService, ControlPlaneAuditRecordRepository auditRecordRepository, JdbcTemplate template, OrganizationRepository organizationRepository) {
         this.tenantContext = tenantContext;
         this.apiRouteRepository = apiRouteRepository;
         this.versionRepository = versionRepository;
@@ -41,6 +48,8 @@ public class RouteService {
         this.routeConfigurationVersionRepository = routeConfigurationVersionRepository;
         this.auditService = auditService;
         this.auditRecordRepository = auditRecordRepository;
+        this.template = template;
+        this.organizationRepository = organizationRepository;
     }
 
     public RouteResponse create(@Valid RouteRequest routeRequest) {
@@ -296,14 +305,52 @@ public class RouteService {
     }
 
     @Transactional(readOnly = true)
-    public List<RouteResponse> findAllActiveForGateway() {
+    public List<RouteResponse> findAllActiveApiRoutes() {
         List<ApiRoute> list=apiRouteRepository.findAllByActiveTrueAndOrganizationStatus(OrganizationStatus.ACTIVE);
         if(list.isEmpty()){
             System.out.println("no routes are there");
         }
+
         return list.stream()
                 .map(RouteResponse::from).toList();
     }
+
+
+
+        public List<GatewayRouteResponse> findAllGatewayRoutes(){
+    //        String sql= """
+    //                SELECT r.*, o.slug AS slug
+    //                            FROM api_routes r
+    //                            JOIN organizations o ON r.organization_id = o.id
+    //                            WHERE r.active = true
+    //                            and o.status = 'ACTIVE'
+    //
+    //                """;
+            List<RouteResponse> routeResponseList=findAllActiveApiRoutes();
+            List<OrganizationSlugProjection> organizationSlugProjectionlist=organizationRepository.findAllSlugById(
+                    routeResponseList.stream()
+                            .map(RouteResponse::getOrganizationId)
+                            .distinct()
+                            .toList()
+            );
+
+            Map<Long,String> slugMap=organizationSlugProjectionlist.stream()
+                    .collect(Collectors.toMap(
+                            OrganizationSlugProjection::getId,
+                            OrganizationSlugProjection::getSlug
+                    ));
+
+            List<GatewayRouteResponse> res=routeResponseList.stream()
+                    .map(routeResponse -> {
+                        GatewayRouteResponse gatewayRouteResponse=new GatewayRouteResponse();
+                        BeanUtils.copyProperties(routeResponse, gatewayRouteResponse);
+                        gatewayRouteResponse.setSlug(slugMap.get(routeResponse.getOrganizationId()));
+                        return gatewayRouteResponse;
+                    }).toList();
+
+            return res;
+        }
+
 
     private void saveVersion(ApiRoute route, RouteVersionChnageType changeType){
         RouteConfigurationVersion version=new RouteConfigurationVersion();

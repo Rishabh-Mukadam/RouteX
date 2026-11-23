@@ -18,6 +18,7 @@ import java.util.Set;
 public class GatewayRoute {
     private Long id;
     private Long organizationId;
+    private String slug;
     private String routeId;
     private String name;
     private String pathPattern;

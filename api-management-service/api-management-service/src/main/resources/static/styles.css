@@ -1444,3 +1444,109 @@ tbody tr:hover td {
         display: none;
     }
 }
+
+/* RouteX visual refresh — presentation only; application behavior is unchanged. */
+:root {
+    --ink: #172033;
+    --muted: #69758b;
+    --paper: #f5f7fc;
+    --surface: #ffffff;
+    --surface-2: #edf1f8;
+    --line: #e2e8f2;
+    --forest: #172554;
+    --forest-2: #3156c9;
+    --lime: #a9f0df;
+    --orange: #e58a55;
+    --red: #c43f55;
+    --blue: #4568dc;
+    --shadow: 0 22px 60px rgba(23, 37, 84, .10);
+    --radius: 18px;
+    --radius-small: 11px;
+}
+body { font-family: Inter, "Segoe UI", sans-serif; }
+.login-shell { background: var(--surface); }
+.login-story {
+    background: radial-gradient(circle at 82% 18%, rgba(90,125,239,.34), transparent 29%),
+    linear-gradient(145deg, #111d45 0%, #1d3478 58%, #2549a5 100%);
+}
+.login-story::before {
+    border-color: rgba(174,196,255,.22);
+    box-shadow: 0 0 0 70px rgba(174,196,255,.045), 0 0 0 140px rgba(174,196,255,.025);
+}
+.login-story::after {
+    background-image: linear-gradient(rgba(174,196,255,.11) 1px, transparent 1px), linear-gradient(90deg, rgba(174,196,255,.11) 1px, transparent 1px);
+}
+.login-story .brand-mark {
+    border: 0;
+    border-radius: 12px;
+    color: #172554;
+    background: #a9f0df;
+    box-shadow: 0 8px 24px rgba(0,0,0,.16);
+}
+.story-copy h1 { letter-spacing: -.06em; }
+.story-lead { color: rgba(245,248,255,.76); }
+.architecture-strip i { background: rgba(169,240,223,.5); }
+.login-panel { background: linear-gradient(135deg,#fff 0%,#f5f7fc 100%); }
+.login-card { gap: 25px; }
+.login-card h2 { letter-spacing: -.055em; }
+.field input, .field select, .field textarea, .search-field {
+    border-color: #dfe5f0;
+    border-radius: 11px;
+    background: #fff;
+}
+.field input:focus, .field select:focus, .field textarea:focus, .search-field:focus-within {
+    border-color: #5474df;
+    box-shadow: 0 0 0 4px rgba(69,104,220,.11);
+}
+.button { border-radius: 10px; }
+.button-primary {
+    color: #fff;
+    background: linear-gradient(135deg,#3156c9,#456de5);
+    box-shadow: 0 7px 18px rgba(49,86,201,.18);
+}
+.button-primary:hover { background: linear-gradient(135deg,#2849b2,#3c60d2); }
+.button-quiet { border-color: #dfe5f0; background: #fff; }
+.chip { border-color: #dfe5f0; background: #fff; }
+.app-shell { background: var(--paper); }
+.sidebar {
+    background: linear-gradient(180deg,#111d45 0%,#1c3478 100%);
+    box-shadow: 8px 0 30px rgba(23,37,84,.07);
+}
+.sidebar .brand-mark {
+    border: 0;
+    border-radius: 10px;
+    color: #172554;
+    background: #a9f0df;
+}
+.navigation button { border-radius: 10px; }
+.navigation button:hover, .navigation button.active { background: rgba(255,255,255,.11); }
+.topbar {
+    background: rgba(255,255,255,.9);
+    border-bottom-color: #e6ebf4;
+}
+.topbar h2 { letter-spacing: -.045em; }
+.live-indicator { background: #fff; }
+.role-badge {
+    color: #3156c9;
+    border-color: rgba(69,104,220,.2);
+    background: #eef2ff;
+}
+.page-content { padding-top: 38px; }
+.table-card, .stat-card, .profile-card, .modal-card {
+    border-color: #e4e9f2;
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(23,37,84,.055);
+}
+.table-card { background: #fff; }
+table thead { background: #f7f9fd; }
+th { color: #69758b; }
+tbody tr:hover { background: #f8faff; }
+.modal { border: 1px solid #e4e9f2; border-radius: 18px; box-shadow: 0 30px 90px rgba(15,25,55,.25); }
+.modal::backdrop { background: rgba(12,22,50,.48); backdrop-filter: blur(4px); }
+@media (max-width: 760px) {
+    .login-shell { grid-template-columns: 1fr; }
+    .login-story { min-height: 390px; padding: 28px 25px; }
+    .story-copy h1 { font-size: clamp(40px,10vw,58px); }
+    .architecture-strip { margin-top: 30px; }
+    .login-panel { min-height: auto; padding: 48px 25px; }
+}

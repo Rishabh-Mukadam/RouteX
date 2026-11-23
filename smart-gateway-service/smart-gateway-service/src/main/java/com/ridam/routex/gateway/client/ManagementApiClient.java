@@ -11,6 +11,8 @@ import org.springframework.web.client.RestClient;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class ManagementApiClient {
@@ -30,7 +32,7 @@ public class ManagementApiClient {
         this.password = password;
     }
 
-    public List<GatewayRoute> fetchActiveRoutes(){
+    public Map<String,List<GatewayRoute>> fetchActiveRoutes(){
         ensureToken();
         List<GatewayRoute> gatewayRouteList;
         try{
@@ -43,9 +45,14 @@ public class ManagementApiClient {
         }catch (Exception e){
             throw e;
         }
-        if(gatewayRouteList.isEmpty() || gatewayRouteList==null){
-        }
-        return gatewayRouteList;
+
+
+        Map<String,List<GatewayRoute>> routeMap= gatewayRouteList.stream()
+                                                    .collect(Collectors.groupingBy(
+                                                            route->route.getSlug()
+                                                    ));
+
+        return routeMap;
     }
 
     private synchronized void ensureToken() {

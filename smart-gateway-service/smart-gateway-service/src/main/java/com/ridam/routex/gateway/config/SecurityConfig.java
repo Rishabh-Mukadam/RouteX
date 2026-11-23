@@ -10,9 +10,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
-        httpSecurity.authorizeHttpRequests(auth->{
-            auth.requestMatchers("/health").permitAll()
-                    .anyRequest().authenticated();
+        httpSecurity
+                .csrf(csrf->csrf.disable())
+                .authorizeHttpRequests(auth->{
+//            auth.requestMatchers("/health").permitAll()
+                    auth.anyRequest().permitAll();
+
         });
         return httpSecurity.build();
 

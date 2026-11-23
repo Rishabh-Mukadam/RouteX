@@ -5,6 +5,8 @@ import com.ridam.routex.management.entity.ApiRoute;
 import com.ridam.routex.management.entity.RouteHeaderRule;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,24 +15,26 @@ import java.util.Set;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class RouteResponse {
 
-    private Long id;
-    private Long organizationId;
-    private String routeId;
-    private String name;
-    private String pathPattern;
-    private String targetBaseUrl;
-    private String targetPathPrefix;
-    private Integer requestsPerMinute;
-    private Integer responseTimeoutMs;
-    private boolean idempotencyEnabled;
-    private boolean active;
-    private Long configurationVersion;
-    private Set<String> allowedMethods;
-    private List<HeaderRuleResponse> headerRules;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    protected Long id;
+    protected Long organizationId;
+    protected String routeId;
+    protected String name;
+    protected String pathPattern;
+    protected String targetBaseUrl;
+    protected String targetPathPrefix;
+    protected Integer requestsPerMinute;
+    protected Integer responseTimeoutMs;
+    protected boolean idempotencyEnabled;
+    protected boolean active;
+    protected Long configurationVersion;
+    protected Set<String> allowedMethods;
+    protected List<HeaderRuleResponse> headerRules;
+    protected LocalDateTime createdAt;
+    protected LocalDateTime updatedAt;
 
     public static RouteResponse from(ApiRoute route) {
         List<HeaderRuleResponse> rules = new ArrayList<HeaderRuleResponse>();

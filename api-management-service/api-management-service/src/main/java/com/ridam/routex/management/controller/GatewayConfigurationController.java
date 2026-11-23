@@ -1,6 +1,7 @@
 package com.ridam.routex.management.controller;
 
 
+import com.ridam.routex.management.dto.responseDto.GatewayRouteResponse;
 import com.ridam.routex.management.dto.responseDto.RouteResponse;
 import com.ridam.routex.management.service.RouteService;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,12 @@ public class GatewayConfigurationController {
         this.routeService=routeService;
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<RouteResponse>> getActiveRoutes() {
+//        return ResponseEntity.ok(routeService.findAllActiveForGateway());
+//    }}
+
     @GetMapping
-    public ResponseEntity<List<RouteResponse>> getActiveRoutes() {
-        return ResponseEntity.ok(routeService.findAllActiveForGateway());
+    public ResponseEntity<List<GatewayRouteResponse>> getActiveRoutes() {
+        return ResponseEntity.ok(routeService.findAllGatewayRoutes());
     }}
